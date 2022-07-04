@@ -13,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.francaemp.course.entities.enums.OrderStatus;
 
 @Entity
 @Table(name = "tb_order")
@@ -24,8 +25,10 @@ public class Order implements Serializable {
 	private Long id;
 
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "GMT")
-	private Instant instant;
+	private Instant moment;
 
+	private Integer orderStatus;
+	
 	@ManyToOne
 	@JoinColumn(name = "client_id")
 	private User client;
@@ -33,9 +36,10 @@ public class Order implements Serializable {
 	public Order() {
 	}
 
-	public Order(Long id, Instant instant, User client) {
+	public Order(Long id, Instant moment, OrderStatus orderStatus, User client) {
 		this.id = id;
-		this.instant = instant;
+		this.moment = moment;
+		setOrderStatus(orderStatus);
 		this.client = client;
 	}
 
@@ -47,14 +51,23 @@ public class Order implements Serializable {
 		this.id = id;
 	}
 
-	public Instant getInstant() {
-		return instant;
+	public Instant getMoment() {
+		return moment;
 	}
 
-	public void setInstant(Instant instant) {
-		this.instant = instant;
+	public void setMoment(Instant moment) {
+		this.moment = moment;
 	}
 
+	public OrderStatus getOrderStatus() {
+		return OrderStatus.valueOf(orderStatus);
+	}
+
+	public void setOrderStatus(OrderStatus orderStatus) {
+		if(orderStatus != null) {
+		this.orderStatus = orderStatus.getCode();
+	}
+}
 	public User getClient() {
 		return client;
 	}
@@ -82,7 +95,7 @@ public class Order implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Order [id=" + id + ", instant=" + instant + ", client=" + client + "]";
+		return "Order [id=" + id + ", instant=" + moment + ", client=" + client + "]";
 	}
 
 }
